@@ -6,7 +6,7 @@ async function main() {
   //  this above value will be passed into our flashLoanArbitrage constructor 
 
   await flashLoanArbitrage.deployed();
-  console.log("FLashlona arbitrage contract deployed: ", flashLoanArbitrage.address)
+  console.log("FLashlona arbitrage contract deployed: ", flashLoanArbitrage.address);
 }
 /* deploy() will trigger this deployment of the contract and .deployed() checks if the contract is already available on the blockchain and if the deployment is still ongoing will wait for the deployment transaction to be mined 
 question for instructor --- what are we awaiting? i get that its async then await and then catch is basically catching our resolved promises but what are we awaiting? why do we need to wait for all three?*/

@@ -9,7 +9,7 @@ import {IERC20} from "@aave/core-v3/contracts/dependencies/openzeppelin/contract
 /* need IERC20 to call the approve function on the token we are borrowing */
 
 
-contract FlashLoan is FlashLoanSimpleReceiverBase {
+contract FlashLoanArbitrage is FlashLoanSimpleReceiverBase {
     address payable owner;
     // an address type variable that allows owner to receive ether to a contract
 
