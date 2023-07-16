@@ -88,5 +88,11 @@ contract FlashLoan is FlashLoanSimpleReceiverBase {
     }
 
     // adding an only owner modifier
-    modifier onlyOwner() {}
+    //Modifiers in Solidity are special functions that modify the behavior of other functions. They allow developers to add extra conditions or functionality without having to rewrite the entire function.
+    modifier onlyOwner() {
+        require(msg.sender == owner, "Only Zool");
+        
+        _;
+        // this is syntax describes a place holder for the rest of the function that this is being applied to _;
+    }
 }
