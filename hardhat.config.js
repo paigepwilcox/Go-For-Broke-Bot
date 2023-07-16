@@ -3,7 +3,7 @@ require("dotenv").config();
 
 /** @type import('hardhat/config').HardhatUserConfig */
 module.exports = {
-  solidity: "0.8.10",
+  solidity: "0.8.18",
   networks: {
     goerli: {
       url: process.env.INFURA_GOERLI_ENDPOINT,

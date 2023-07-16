@@ -2,7 +2,7 @@ const hre = require("hardhat");
 
 async function main() {
   const FlashLoanArbitrage = await hre.ethers.getContractFactory("FlashLoanArbitrage");
-  const flashLoanArbitrage = await FlashLoanArbitrage.deploy("0x0496275d34753A48320CA58103d5220d394FF77F");
+  const flashLoanArbitrage = await FlashLoanArbitrage.deploy("0xC911B590248d127aD18546B186cC6B324e99F02c");
   //  this above value will be passed into our flashLoanArbitrage constructor 
 
   await flashLoanArbitrage.deployed();
@@ -14,6 +14,6 @@ question for instructor --- what are we awaiting? i get that its async then awai
 // We recommend this pattern to be able to use async/await everywhere
 // and properly handle errors.
 main().catch((error) => {
-  console.error(error);
+  console.error("you are getting this error: ", error);
   process.exitCode = 1;
 });
