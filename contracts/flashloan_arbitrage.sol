@@ -33,6 +33,12 @@ contract FlashLoan is FlashLoanSimpleReceiverBase {
         ** custom logic for arbitrage */
 
 
-        
+        // set up amount owed - amount that we need to approve for the pool contract to take back
+        uint256 amountOwed = amount + premium;
+        // using ierc20 to pass in the asset and call the approve function as stated above
+        // POOL is coming from FLashLoanSimpleReceiverBase.sol
+        IERC20(asset).approve(address(POOL), amountOwed);
+
+        return true;
     }
 }
