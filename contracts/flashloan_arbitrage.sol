@@ -18,4 +18,21 @@ contract FlashLoan is FlashLoanSimpleReceiverBase {
     {
         owner = payable(msg.sender);
     }
+
+    /* this is an internface that can be found in IFlashLoanSimpleReceiver.sol */
+    function executeOperation(
+        address asset,
+        uint256 amount,
+        uint256 premium,
+        address initiator,
+        bytes calldata params
+    ) external override returns (bool) {
+        /*since we are inheriting we need to put "override" 
+        from video:
+        ** we have sucessfully borrowed funds 
+        ** custom logic for arbitrage */
+
+
+        
+    }
 }
