@@ -73,4 +73,20 @@ contract FlashLoan is FlashLoanSimpleReceiverBase {
         // gives us this contracts balance of any token we specify 
         return IERC20(_tokenAddress).balanceOf(address(this));
     }
+
+
+    // need a function to withdraw our profit funds
+    // designed to withdraw specific tokens
+    function withdraw(address _tokenAddress) external onlyOwner {
+        IERC20 token = IERC20(_tokenAddress);
+
+        /*
+        * initiate transfer on this token object
+        * msg.sender is the owner of the contract 
+        * token.balanceOf -- all the holdings of this contract for this particular token */
+        token.transfer(msg.sender, token.balanceOf(address(this)));
+    }
+
+    // adding an only owner modifier
+    modifier onlyOwner() {}
 }
