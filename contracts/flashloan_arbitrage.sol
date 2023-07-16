@@ -95,4 +95,9 @@ contract FlashLoan is FlashLoanSimpleReceiverBase {
         _;
         // this is syntax describes a place holder for the rest of the function that this is being applied to _;
     }
+
+
+    // adding a receive function just in case we want this contract to be able to receieve ether for any reason
+    //The receive function is similar to the fallback function, but it is designed specifically to handle incoming ether without the need for a data call.
+    receive() external payable {}
 }
