@@ -1,25 +1,52 @@
 // SPDX-License-Identifier: UNLICENSED
 pragma solidity 0.8.18;
+pragma abicoder v2;
+
+// arbitrage uniswap 
+import '@uniswap/v3-periphery/contracts/interfaces/ISwapRouter.sol';
+import '@uniswap/v3-periphery/contracts/libraries/TransferHelper.sol';
 
 import {FlashLoanSimpleReceiverBase} from "@aave/core-v3/contracts/flashloan/base/FlashLoanSimpleReceiverBase.sol";
-/* flashloansimplereceiverbase - we need to implement this interface for our contract to be a receiver of a loan. contains the executeOperation() */
+/* 
+flashloansimplereceiverbase - we need to implement this interface for our contract to be a receiver of a loan. contains the executeOperation() 
+* what are we using from this import? 
+*/
+import {IPool} from "@aave/core-v3/contracts/interfaces/IPool.sol";
+
 import {IPoolAddressesProvider} from "@aave/core-v3/contracts/interfaces/IPoolAddressesProvider.sol";
-/* IPoolAdressesProvider is called within our flashloansimplereceiverbase */
+/* 
+IPoolAdressesProvider is called within our flashloansimplereceiverbase
+* what are we using from this import?
+*/
 import {IERC20} from "@aave/core-v3/contracts/dependencies/openzeppelin/contracts/IERC20.sol";
-/* need IERC20 to call the approve function on the token we are borrowing */
+/* 
+IERC20 is an interface 
+* what are we using from this import? calling the approve function on the token we are borrowing 
+*/
+
+
 
 
 contract FlashLoanArbitrage is FlashLoanSimpleReceiverBase {
     address payable owner;
-    // an address type variable that allows owner to receive ether to a contract
+    /* 
+    * an address type variable named owner, payable allows owner to receive ether to a contract
+    * When a developer explicitly marks a smart contract with the payable type, they are saying “I expect ether to be sent to this function”. 
+    */
 
+
+    /* 
+    * a constructor function is used to initialize state variables of a contract 
+    * a contract has only one constructor
+    * since this contract is inheriting from FlashLoanSimpleReceiverBase the constructor is initializing an instance of this contract */
     constructor(address _addressProvider) 
         FlashLoanSimpleReceiverBase(IPoolAddressesProvider(_addressProvider))
     {
+        // we are assigning owner to the address that deploys this contract
         owner = payable(msg.sender);
     }
 
-    /* this is an internface that can be found in IFlashLoanSimpleReceiver.sol */
+    /* this is an interface that can be found in IFlashLoanSimpleReceiver.sol */
     function executeOperation(
         address asset,
         uint256 amount,
@@ -28,9 +55,18 @@ contract FlashLoanArbitrage is FlashLoanSimpleReceiverBase {
         bytes calldata params
     ) external override returns (bool) {
         /*since we are inheriting we need to put "override" 
-        from video:
-        ** we have sucessfully borrowed funds 
+
+
+        ** at this point in our code we have sucessfully borrowed funds 
         ** custom logic for arbitrage */
+        
+
+        arbitrageContract.depositUSDC(num);
+        arbitrageContract.buyMAGIC();
+        arbitrageContract.depositMAGIC(magic.balanceOf(address(this)));
+        arbitrageContract.sellMAGIC();
+
+
 
 
         // set up amount owed - amount that we need to approve for the pool contract to take back

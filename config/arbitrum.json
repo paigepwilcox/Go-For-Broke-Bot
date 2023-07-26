@@ -1,0 +1,21 @@
+{
+    "arbContract": "0xchangethis",
+    "minBasisPointsPerTrade": 0,
+    "routers": [
+        { "dex": "uniswap", "address": "0xE592427A0AEce92De3Edee1F18E0157C05861564" },
+        { "dex": "sushiswap", "address": "0xNEEDTHIS" }
+    ],
+    "baseAssets": [
+        { "sym": "weth","address": "0x82af49447d8a07e3bd95bd0d56f35241523fbab1" },
+        { "sym": "usdc", "address": "0xaf88d065e77c8cc2239327c5edb3a432268e5831" }
+    ],
+    "tokens": [
+        { "sym": "MAGIC", "address": "0x539bde0d7dbd336b79148aa742883198bbf60342" }
+    ],
+    "routes": [
+        ["0xE592427A0AEce92De3Edee1F18E0157C05861564","0xNEEDTHIS","0x82af49447d8a07e3bd95bd0d56f35241523fbab1","0x539bde0d7dbd336b79148aa742883198bbf60342"],
+        ["0xE592427A0AEce92De3Edee1F18E0157C05861564","0xNEEDTHIS","0xaf88d065e77c8cc2239327c5edb3a432268e5831","0x539bde0d7dbd336b79148aa742883198bbf60342"],
+        ["0xNEEDTHIS","0xE592427A0AEce92De3Edee1F18E0157C05861564","0xaf88d065e77c8cc2239327c5edb3a432268e5831","0x539bde0d7dbd336b79148aa742883198bbf60342"],
+        ["0xNEEDTHIS","0xE592427A0AEce92De3Edee1F18E0157C05861564","0x82af49447d8a07e3bd95bd0d56f35241523fbab1","0x539bde0d7dbd336b79148aa742883198bbf60342"]
+    ]
+}
