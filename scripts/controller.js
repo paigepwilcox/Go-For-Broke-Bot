@@ -1,37 +1,50 @@
-// require dotenv 
-// make sure ethers is in package.json (dependencies)
-// import ethers or use hre from hard hat to connect to the provider 
-import { ethers } from ethers
+// connect to the ethereum provider with hardhat
+const hre = require("hardhat");
+require("dotenv").config();
+
+// global variables:
+let config, arbContract, owner, inTrade, balances;
+
+// config variable is json 
+const network = hre.network.name;
+if (network === 'arbitrum') config = require('./../config/arbitrum.json')
+
+// main function
+const main = async () => {
+    await setup();
+}
+
+// returns a target object 
+let index = 0;
+const findRoute = () => {
+    const targetRoute= {};
+    const route = config.routes[index];
+
+    index += 1;
+    if (index >= config.routes.length) index = 0;
+
+    targetRoute.router1 = route[0];
+    targetRoute.router2 = route[1];
+    targetRoute.token1 = route[2];
+    targetRoute.token2 = route[3];
+
+    return targetRoute;
+}
+
+//connects to our deployed contract  
+//https://docs.ethers.org/v5/api/contract/contract-factory/
+const setup = async () => {
+    [owner] = await hre.ethers.getSigners();
+
+    const arb = await ethers.getContractFactory('FlashLoanArbitrage');
+    const arbContract = await arb.attach(config.arbContract);
+}
 
 
 
-// set up provider connection
-// connect to the arbitrum network, console.log(network.name) to make sure we are on the right network
 
 
 
-
-// set up a async function named main that will call the setup() and will call lookForTrade() javascript functions
-
-
-/* 
-lookForTrade() function should:
-
-
-*/
-
-
-/* 
-setup() function should: 
-- assign the owner 
-- connect, declare and assign a name to the FlashLoanArbitrage contract that I wrote
-i.e. 
-creates instance of contract returns the byte address  
-const contract = await ethers.getContractFactory('FlashLoanArbitrage')
-https://docs.ethers.org/v5/api/contract/contract-factory/
-- ???what is the balances object???
-- set up a setTimout function to log results of trades 
-*/
 
 
 

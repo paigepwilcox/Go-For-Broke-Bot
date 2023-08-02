@@ -79,7 +79,10 @@ contract FlashLoanArbitrage is FlashLoanSimpleReceiverBase {
     }
 
 
-    // write a function that will kick off entire process and request the loan
+    /* 
+    taking this out since it will be automated
+
+    write a function that will kick off entire process and request the loan
     function requestFlashLoanArbitrage(address _token, uint256 _amount) public {
         // set to the adress of the current contract
         address receiverAddress = address(this);
@@ -98,6 +101,8 @@ contract FlashLoanArbitrage is FlashLoanSimpleReceiverBase {
             referralCode
         );
     }
+    */
+
     
     /*
     * use this at the very end to see what the balance of our contract is
