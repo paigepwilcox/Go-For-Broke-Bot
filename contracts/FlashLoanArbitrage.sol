@@ -3,13 +3,13 @@ pragma solidity 0.8.18;
 pragma abicoder v2;
 
 // arbitrage uniswap 
-import '@uniswap/v3-periphery/contracts/interfaces/ISwapRouter.sol';
-import '@uniswap/v3-periphery/contracts/libraries/TransferHelper.sol';
+// import '@uniswap/v3-periphery/contracts/interfaces/ISwapRouter.sol';
+// import '@uniswap/v3-periphery/contracts/libraries/TransferHelper.sol';
 
+import "@openzeppelin/contracts/access/Ownable.sol";
 import {FlashLoanSimpleReceiverBase} from "@aave/core-v3/contracts/flashloan/base/FlashLoanSimpleReceiverBase.sol";
 /* 
 flashloansimplereceiverbase - we need to implement this interface for our contract to be a receiver of a loan. contains the executeOperation() 
-* what are we using from this import? 
 */
 import {IPool} from "@aave/core-v3/contracts/interfaces/IPool.sol";
 
@@ -23,11 +23,15 @@ import {IERC20} from "@aave/core-v3/contracts/dependencies/openzeppelin/contract
 IERC20 is an interface 
 * what are we using from this import? calling the approve function on the token we are borrowing 
 */
+interface IUniswapV2Router {
+// https://docs.uniswap.org/contracts/v2/reference/smart-contracts/library#getamountsout
+    function getAmountsOut(uint256 amountIn, address[] memory path) external view returns (uint256[] memory amounts); // returns the maximum output amount of the other asset (accounting for fees) given reserves.
+    function swapExactTokensForTokens(uint256 amountIn, uint256 amountOutMin, address[] calldata path, address to, uint256 deadline) external returns (uint256[] memory amounts); 
+}
 
 
 
-
-contract FlashLoanArbitrage is FlashLoanSimpleReceiverBase {
+contract FlashLoanArbitrage is FlashLoanSimpleReceiverBase, Ownable {
     address payable owner;
     /* 
     * an address type variable named owner, payable allows owner to receive ether to a contract
@@ -45,6 +49,41 @@ contract FlashLoanArbitrage is FlashLoanSimpleReceiverBase {
         // we are assigning owner to the address that deploys this contract
         owner = payable(msg.sender);
     }
+    /* to instantiate an instance of the IPoolAdressesProvider interface we pass in -- FlashLoanSimpleReceiverBase(IPoolAddressesProvider(_addressProvider)) */
+
+
+
+    function swap(address router, address _tokenIn, address _tokenOut, uint256 _amount) private {
+        IERC20(_tokenIn).approve(router, _amount);
+        address[] memory path;
+        path = new address[](2);
+        path[0] = _tokenIn;
+        path[1] = _tokenOut;
+        uint deadline = block.timestamp + 300;
+        IUniswapV2Router(router).swapExactTokensForTokens(_amount, 1, path, address(this), deadline);
+    }
+
+    // returns the amount left of _tokenOut after a single swap 
+    function getAmountOutMin(address router, address _tokenIn, address _tokenOut, uint256 _amount) public view returns (uint256) {
+        address[] memory path;
+        path = new address[](2);
+        path[0] = _tokenIn;
+        path[1] = _tokenOut;
+        uint256[] memory amountOutMins = IUniswapV2Router(router).getAmountsOut(_amount, path);
+        return amountOutMins[path.length -1];
+    }
+
+    function estimateDualTrade(address _router1, address _router2, address _token1, address _token2, uint256 _amount) external view returns (uint256)  {
+        uint256 amtBack1 = getAmountOutMin(_router1, _token1, _token2, _amount);
+        uint256 amtBack2 = getAmountOutMin(_router2, _token2, _token1, amtBack1);
+        return amtBack2;
+    }
+
+    function dualTrade(address _router1, address _router2, address _token1, address _token2, uint256 _amount) external onlyOwner {
+        uint startBalance = IERC20(_token1).balanceOf(address(this)); // this? or owner? 
+        uint token2InitialBalance = IERC20(_token2).balanceOf(address(this));
+    }
+
 
     /* this is an interface that can be found in IFlashLoanSimpleReceiver.sol */
     function executeOperation(
@@ -61,10 +100,16 @@ contract FlashLoanArbitrage is FlashLoanSimpleReceiverBase {
         ** custom logic for arbitrage */
         
 
-        arbitrageContract.depositUSDC(num);
-        arbitrageContract.buyMAGIC();
-        arbitrageContract.depositMAGIC(magic.balanceOf(address(this)));
-        arbitrageContract.sellMAGIC();
+        function dualTrade(address _router1, address _router2, address _token1, address _token2, uint256 _amount) external onlyOwner {
+            uint startBalance = IERC20(_token1).balanceOf(address(this));
+            uint token2InitialBalance = IERC20(_token2).balanceOf(address(this));
+            swap(_router1, _token1, _token2, _amount);
+            uint token2Balance = IERC20(_token2).balanceOf(address(this));
+            uint availableFunds = token2Balance - token2InitialBalance;
+            swap(_router2, _token2, _token1, availableFunds);
+            uint endBalance = IERC20(_token1).balanceOf(address(this));
+            require(endBalance > startBalance, "reverted, you're broke")
+        }
 
 
 

@@ -7,7 +7,7 @@ let config, arbContract, owner, inTrade, balances;
 
 // config variable is json 
 const network = hre.network.name;
-if (network === 'arbitrum') config = require('./../config/arbitrum.json')
+if (network === 'arbitrum') config = require('./../config/arbitrum.json');
 
 // main function
 const main = async () => {
