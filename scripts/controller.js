@@ -12,6 +12,7 @@ if (network === 'arbitrum') config = require('./../config/arbitrum.json');
 // main function
 const main = async () => {
     await setup();
+    await findTrade();
 }
 
 // returns a target object 
@@ -30,6 +31,54 @@ const findRoute = () => {
 
     return targetRoute;
 }
+
+// find a trade 
+const findTrade = async () => {
+    let targetRoute = findRoute();
+
+    try {
+        let tradeSize =  ethers.BigNumber.from(1000); //some big number
+        const amtBack = await arbContract.estimateDualTrade(targetRoute.router1, targetRoute.router2, targetRoute.token1, targetRoute.token2, tradeSize);
+
+        if (amtBack.gt(tradeSize)) {
+            await dualTrade();
+        }
+    } catch (e) {
+        console.log(e)
+        await findTrade();
+    }
+}
+
+// trade
+const dualTrade = async (router1, router2, baseToken, token2, amount) => {
+    if (inTrade === true) {
+        await findTrade();
+        // return false?
+    }
+    
+    try {
+        inTrade = true;
+        console.log('Making a trade eeeeee');
+
+        const setTxValues = await arbContract.connect(owner).dualTradePath(router1, router2, baseToken, token2);
+        await setTxValues.wait();
+        const tx = await arbContract.connect(owner).executeOperation(baseToken, amount);
+
+        console.log('passed');
+        console.log(owner);
+        await tx.wait();
+        console.log('completed!');
+        inTrade = false;
+        await findTrade()
+    } catch (e) {
+        console.log('O NO an ERROR, THE HORROR');
+        console.log(e);
+        inTrade = false;
+        await findTrade();
+    }
+}
+
+
 
 //connects to our deployed contract  
 //https://docs.ethers.org/v5/api/contract/contract-factory/

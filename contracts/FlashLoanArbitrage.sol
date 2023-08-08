@@ -1,12 +1,13 @@
 // SPDX-License-Identifier: UNLICENSED
-pragma solidity 0.8.18;
+pragma solidity ^0.8.10;
 pragma abicoder v2;
 
 // arbitrage uniswap 
 // import '@uniswap/v3-periphery/contracts/interfaces/ISwapRouter.sol';
 // import '@uniswap/v3-periphery/contracts/libraries/TransferHelper.sol';
 
-import "@openzeppelin/contracts/access/Ownable.sol";
+import {Ownable} from "@openzeppelin/contracts/access/Ownable.sol";
+// import "https://github.com/OpenZeppelin/openzeppelin-contracts/blob/master/contracts/access/Ownable.sol";
 import {FlashLoanSimpleReceiverBase} from "@aave/core-v3/contracts/flashloan/base/FlashLoanSimpleReceiverBase.sol";
 /* 
 flashloansimplereceiverbase - we need to implement this interface for our contract to be a receiver of a loan. contains the executeOperation() 
@@ -32,7 +33,14 @@ interface IUniswapV2Router {
 
 
 contract FlashLoanArbitrage is FlashLoanSimpleReceiverBase, Ownable {
-    address payable owner;
+    // address payable owner;
+    address router1;
+    address router2;
+    address token1;
+    address token2;
+
+    // i think i have to make these state variable to be able to update their values
+    
     /* 
     * an address type variable named owner, payable allows owner to receive ether to a contract
     * When a developer explicitly marks a smart contract with the payable type, they are saying “I expect ether to be sent to this function”. 
@@ -47,7 +55,12 @@ contract FlashLoanArbitrage is FlashLoanSimpleReceiverBase, Ownable {
         FlashLoanSimpleReceiverBase(IPoolAddressesProvider(_addressProvider))
     {
         // we are assigning owner to the address that deploys this contract
-        owner = payable(msg.sender);
+        // owner = payable(msg.sender);
+
+        token2 = 0x753198790D8B64eCa2A83B9Af99b6e79A018A74b;
+        token1 = 0x0B1ba0af832d7C05fD64161E0Db78E85978E8082;
+        router2 = 0xc35DADB65012eC5796536bD9864eD8773aBc74C4;
+        router1 = 0x5C69bEe701ef814a2B6a3EDD4B1652CB9cc5aA6f;
     }
     /* to instantiate an instance of the IPoolAdressesProvider interface we pass in -- FlashLoanSimpleReceiverBase(IPoolAddressesProvider(_addressProvider)) */
 
@@ -79,12 +92,12 @@ contract FlashLoanArbitrage is FlashLoanSimpleReceiverBase, Ownable {
         return amtBack2;
     }
 
-    function dualTrade(address _router1, address _router2, address _token1, address _token2, uint256 _amount) external onlyOwner {
-        uint startBalance = IERC20(_token1).balanceOf(address(this)); // this? or owner? 
-        uint token2InitialBalance = IERC20(_token2).balanceOf(address(this));
+    function dualTradePath(address _router1, address _router2, address _token1, address _token2) external onlyOwner {
+        router1 = _router1;
+        router2 = _router2;
+        token1 = _token1;
+        token2 = _token2;
     }
-
-
     /* this is an interface that can be found in IFlashLoanSimpleReceiver.sol */
     function executeOperation(
         address asset,
@@ -92,27 +105,19 @@ contract FlashLoanArbitrage is FlashLoanSimpleReceiverBase, Ownable {
         uint256 premium,
         address initiator,
         bytes calldata params
-    ) external override returns (bool) {
+    ) external override onlyOwner returns (bool) {
         /*since we are inheriting we need to put "override" 
-
 
         ** at this point in our code we have sucessfully borrowed funds 
         ** custom logic for arbitrage */
-        
-
-        function dualTrade(address _router1, address _router2, address _token1, address _token2, uint256 _amount) external onlyOwner {
-            uint startBalance = IERC20(_token1).balanceOf(address(this));
-            uint token2InitialBalance = IERC20(_token2).balanceOf(address(this));
-            swap(_router1, _token1, _token2, _amount);
-            uint token2Balance = IERC20(_token2).balanceOf(address(this));
-            uint availableFunds = token2Balance - token2InitialBalance;
-            swap(_router2, _token2, _token1, availableFunds);
-            uint endBalance = IERC20(_token1).balanceOf(address(this));
-            require(endBalance > startBalance, "reverted, you're broke")
-        }
-
-
-
+        uint startBalance = IERC20(token1).balanceOf(address(this));
+        uint token2InitialBalance = IERC20(token2).balanceOf(address(this));
+        swap(router1, token1, token2, amount);
+        uint token2Balance = IERC20(token2).balanceOf(address(this));
+        uint availableFunds = token2Balance - token2InitialBalance;
+        swap(router2, token2, token1, availableFunds);
+        uint endBalance = IERC20(token1).balanceOf(address(this));
+        require(endBalance > startBalance, "reverted, you're broke");
 
         // set up amount owed - amount that we need to approve for the pool contract to take back
         uint256 amountOwed = amount + premium;
@@ -122,32 +127,7 @@ contract FlashLoanArbitrage is FlashLoanSimpleReceiverBase, Ownable {
 
         return true;
     }
-
-
-    /* 
-    taking this out since it will be automated
-
-    write a function that will kick off entire process and request the loan
-    function requestFlashLoanArbitrage(address _token, uint256 _amount) public {
-        // set to the adress of the current contract
-        address receiverAddress = address(this);
-        address asset = _token;
-        uint256 amount = _amount;
-        bytes memory params = "";
-        uint16 referralCode = 0;
-
-        // found in IPool.sol 459
-        // getting rid of types since these are params now
-        POOL.flashLoanSimple(
-            receiverAddress,
-            asset,
-            amount,
-            params,
-            referralCode
-        );
-    }
-    */
-
+    
     
     /*
     * use this at the very end to see what the balance of our contract is
@@ -173,17 +153,6 @@ contract FlashLoanArbitrage is FlashLoanSimpleReceiverBase, Ownable {
         token.transfer(msg.sender, token.balanceOf(address(this)));
     }
 
-    // adding an only owner modifier
-    //Modifiers in Solidity are special functions that modify the behavior of other functions. They allow developers to add extra conditions or functionality without having to rewrite the entire function.
-    modifier onlyOwner() {
-        require(msg.sender == owner, "Only Zool");
-        
-        _;
-        // this is syntax describes a place holder for the rest of the function that this is being applied to _;
-    }
-
-
-    // adding a receive function just in case we want this contract to be able to receieve ether for any reason
     //The receive function is similar to the fallback function, but it is designed specifically to handle incoming ether without the need for a data call.
     receive() external payable {}
 }
