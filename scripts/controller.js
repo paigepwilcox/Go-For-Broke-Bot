@@ -64,7 +64,7 @@ const dualTrade = async (router1, router2, baseToken, token2, amount) => {
         await setTxValues.wait();
         const tx = await arbContract.connect(owner).executeOperation(baseToken, amount);
 
-        console.log('passed');
+        console.log('hit');
         console.log(owner);
         await tx.wait();
         console.log('completed!');
@@ -84,6 +84,7 @@ const dualTrade = async (router1, router2, baseToken, token2, amount) => {
 //https://docs.ethers.org/v5/api/contract/contract-factory/
 const setup = async () => {
     [owner] = await hre.ethers.getSigners();
+    console.log(owner);
 
     const arb = await ethers.getContractFactory('FlashLoanArbitrage');
     const arbContract = await arb.attach(config.arbContract);

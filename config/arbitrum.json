@@ -1,5 +1,5 @@
 {
-    "arbContract": "0xchangethis",
+    "arbContract": "0x274Ce21bF70Ca0c36ec9C41f7eeb9F9Bd3adF9e3",
     "minBasisPointsPerTrade": 0,
     "routers": [
         { "dex": "uniswap", "address": "0xE592427A0AEce92De3Edee1F18E0157C05861564" },
