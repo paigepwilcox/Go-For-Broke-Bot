@@ -29,17 +29,12 @@ contract FlashLoanArbitrage is FlashLoanSimpleReceiverBase, Ownable {
     constructor(address _addressProvider) 
         FlashLoanSimpleReceiverBase(IPoolAddressesProvider(_addressProvider))
     {
-        // we are assigning owner to the address that deploys this contract
-        // owner = payable(msg.sender);
-
         token2 = 0x753198790D8B64eCa2A83B9Af99b6e79A018A74b;
         token1 = 0x0B1ba0af832d7C05fD64161E0Db78E85978E8082;
         router2 = 0xc35DADB65012eC5796536bD9864eD8773aBc74C4;
         router1 = 0x5C69bEe701ef814a2B6a3EDD4B1652CB9cc5aA6f;
     }
     /* to instantiate an instance of the IPoolAdressesProvider interface we pass in -- FlashLoanSimpleReceiverBase(IPoolAddressesProvider(_addressProvider)) */
-
-
 
     function swap(address router, address _tokenIn, address _tokenOut, uint256 _amount) private {
         IERC20(_tokenIn).approve(router, _amount);
@@ -98,7 +93,6 @@ contract FlashLoanArbitrage is FlashLoanSimpleReceiverBase, Ownable {
         return true;
     }
     
-
     function getBalance(address _tokenAddress) external view returns (uint256) { 
         return IERC20(_tokenAddress).balanceOf(address(this));
     }
