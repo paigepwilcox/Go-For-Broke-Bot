@@ -25,10 +25,10 @@ interface IUniswapV2Pair {
 
 contract FlashLoanArbitrage is FlashLoanSimpleReceiverBase {
     address payable owner;
-    address router1 = 0xE592427A0AEce92De3Edee1F18E0157C05861564;
-    address router2 = 0x1b02dA8Cb0d097eB8D57A175b88c7D8b47997506;
-    address token1 = 0x82af49447d8a07e3bd95bd0d56f35241523fbab1;
-    address token2 = 0x539bde0d7dbd336b79148aa742883198bbf60342;
+    // address router1 = 0x5C69bEe701ef814a2B6a3EDD4B1652CB9cc5aA6f;
+    // address router2 = 0xc35DADB65012eC5796536bD9864eD8773aBc74C4;
+    // address token1 = 0x0B1ba0af832d7C05fD64161E0Db78E85978E8082;
+    // address token2 = 0x753198790D8B64eCa2A83B9Af99b6e79A018A74b;
     
     constructor(address _addressProvider) 
         FlashLoanSimpleReceiverBase(IPoolAddressesProvider(_addressProvider))
