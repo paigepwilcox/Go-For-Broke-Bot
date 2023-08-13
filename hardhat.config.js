@@ -14,5 +14,9 @@ module.exports = {
       // gasPrice:  50000000000,
       // gasLimit: 5000000000,
     },
+    arbitrum: {
+      url: process.env.INFURA_ARBITRUM_ENDPOINT,
+      accounts: [process.env.PRIVATE_KEY_GAS, process.env.PRIVATE_KEY_PROFIT],
+    }
   },
 };

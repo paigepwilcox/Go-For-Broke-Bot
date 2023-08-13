@@ -5,7 +5,7 @@ async function main() {
   const [owner] = await ethers.getSigners();
   console.log("owner address:", owner.address);
   const FlashLoanArbitrage = await hre.ethers.getContractFactory("FlashLoanArbitrage");
-  const flashLoanArbitrage = await FlashLoanArbitrage.deploy("0xC911B590248d127aD18546B186cC6B324e99F02c");
+  const flashLoanArbitrage = await FlashLoanArbitrage.deploy("0xa97684ead0e402dC232d5A977953DF7ECBaB3CDb");
   console.log("made it to deploy");
   // console.log(flashLoanArbitrage.deployTransaction);
   //  this above value will be passed into our flashLoanArbitrage constructor 

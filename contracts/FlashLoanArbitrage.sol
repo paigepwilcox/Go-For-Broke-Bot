@@ -25,6 +25,10 @@ interface IUniswapV2Pair {
 
 contract FlashLoanArbitrage is FlashLoanSimpleReceiverBase {
     address payable owner;
+    address router1 = 0xE592427A0AEce92De3Edee1F18E0157C05861564;
+    address router2 = 0x1b02dA8Cb0d097eB8D57A175b88c7D8b47997506;
+    address token1 = 0x82af49447d8a07e3bd95bd0d56f35241523fbab1;
+    address token2 = 0x539bde0d7dbd336b79148aa742883198bbf60342;
     
     constructor(address _addressProvider) 
         FlashLoanSimpleReceiverBase(IPoolAddressesProvider(_addressProvider))
@@ -62,21 +66,6 @@ contract FlashLoanArbitrage is FlashLoanSimpleReceiverBase {
         return amtBack2;
     }
 
-    // address token2 = 0x753198790D8B64eCa2A83B9Af99b6e79A018A74b;
-    // address token1 = 0x0B1ba0af832d7C05fD64161E0Db78E85978E8082;
-    // address router2 = 0xc35DADB65012eC5796536bD9864eD8773aBc74C4;
-    // address router1 = 0x5C69bEe701ef814a2B6a3EDD4B1652CB9cc5aA6f;
-
-// token2 = 0x753198790D8B64eCa2A83B9Af99b6e79A018A74b;
-// token1 = 0x0B1ba0af832d7C05fD64161E0Db78E85978E8082;
-//         address router2 = 0xc35DADB65012eC5796536bD9864eD8773aBc74C4;
-//         address router1 = 0x5C69bEe701ef814a2B6a3EDD4B1652CB9cc5aA6f;
-    // function dualTradePath(address _router1, address _router2, address _token1, address _token2) external onlyOwner {
-    //     router1 = _router1;
-    //     router2 = _router2;
-    //     token1 = _token1;
-    //     token2 = _token2;
-    // }
     /* this is an interface that can be found in IFlashLoanSimpleReceiver.sol */
     function executeOperation(
         address asset,
@@ -86,14 +75,14 @@ contract FlashLoanArbitrage is FlashLoanSimpleReceiverBase {
         bytes calldata params
     ) external override returns (bool) {
         
-        // uint startBalance = IERC20(token1).balanceOf(address(this));
-        // uint token2InitialBalance = IERC20(token2).balanceOf(address(this));
-        // swap(router1, token1, token2, amount);
-        // uint token2Balance = IERC20(token2).balanceOf(address(this));
-        // uint availableFunds = token2Balance - token2InitialBalance;
-        // swap(router2, token2, token1, availableFunds);
-        // uint endBalance = IERC20(token1).balanceOf(address(this));
-        // require(endBalance > startBalance, "reverted, you're broke");
+        uint startBalance = IERC20(token1).balanceOf(address(this));
+        uint token2InitialBalance = IERC20(token2).balanceOf(address(this));
+        swap(router1, token1, token2, amount);
+        uint token2Balance = IERC20(token2).balanceOf(address(this));
+        uint availableFunds = token2Balance - token2InitialBalance;
+        swap(router2, token2, token1, availableFunds);
+        uint endBalance = IERC20(token1).balanceOf(address(this));
+        require(endBalance > startBalance, "reverted, you're broke");
 
         
         uint256 amountOwed = amount + premium;

@@ -9,7 +9,7 @@ let config, arbitrageContract, owner, inTrade;
 // config variable is json 
 const network = hre.network.name;
 console.log("network name:", network);
-// if (network === 'arbitrum') config = require('./../config/arbitrum.json');
+if (network === 'arbitrum') config = require('./../config/arbitrum.json');
 if (network === 'goerli') config = require('./../config/goerli.json');
 
 // config = require('./../config/arbitrum.json');
@@ -44,25 +44,22 @@ const findTrade = async () => {
 
     try {
         let tradeSize = 10000;
-        // const swapfunc = await arbitrageContract.swap(targetRoute.router1, targetRoute.token1, targetRoute.token2, tradeSize);
-        // console.log(swapfunc);
-
         const working = await arbitrageContract.checkingProvider(tradeSize);
         console.log(working);
         
-        const amountsOut = await arbitrageContract.getAmountOutMin(targetRoute.router1, targetRoute.router2, targetRoute.token1, targetRoute.token2, tradeSize);
-        console.log(amountsOut);
-        // await dualTrade(targetRoute.router1,targetRoute.router2,targetRoute.token1,targetRoute.token2,tradeSize);
+        // const amountsOut = await arbitrageContract.getAmountOutMin(targetRoute.router1, targetRoute.router2, targetRoute.token1, targetRoute.token2, tradeSize);
+        // console.log(amountsOut);
         console.log("-------------*-----------")
         console.log("estimating trade.....")
         console.log("-------------*-----------")
-        // let tradeSize =  ethers.BigNumber.from(1000); //some big number
+
         const amtBack = await arbitrageContract.estimateDualTrade(targetRoute.router1, targetRoute.router2, targetRoute.token1, targetRoute.token2, tradeSize);
         console.log("before the if statement***");
         if (amtBack.gt(tradeSize)) {
             await dualTrade(targetRoute.router1,targetRoute.router2,targetRoute.token1,targetRoute.token2,tradeSize);
         } else {
-            await findTrade();
+            console.log("amtBack not big enough");
+            // await findTrade();
         }
     } catch (e) {
         console.log("findTrade error:", e)
