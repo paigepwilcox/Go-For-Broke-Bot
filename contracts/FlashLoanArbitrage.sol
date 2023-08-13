@@ -2,10 +2,6 @@
 pragma solidity ^0.8.18;
 pragma abicoder v2;
 
-// arbitrage uniswap 
-// import '@uniswap/v3-periphery/contracts/interfaces/ISwapRouter.sol';
-// import '@uniswap/v3-periphery/contracts/libraries/TransferHelper.sol';
-
 import {Ownable} from "@openzeppelin/contracts/access/Ownable.sol";
 import {FlashLoanSimpleReceiverBase} from "@aave/core-v3/contracts/flashloan/base/FlashLoanSimpleReceiverBase.sol";
 import {IPool} from "@aave/core-v3/contracts/interfaces/IPool.sol";
@@ -16,11 +12,11 @@ interface IUniswapV2Router {
     function getAmountsOut(uint256 amountIn, address[] memory path) external view returns (uint256[] memory amounts); // returns the maximum output amount of the other asset (accounting for fees) given reserves.
     function swapExactTokensForTokens(uint256 amountIn, uint256 amountOutMin, address[] calldata path, address to, uint256 deadline) external returns (uint256[] memory amounts); 
 }
+
 interface IUniswapV2Pair {
 // https://docs.uniswap.org/contracts/v2/reference/smart-contracts/pair#swap-1
   function swap(uint256 amount0Out,	uint256 amount1Out,	address to,	bytes calldata data) external; // swaps token emits swap, sync
 }
-
 
 
 contract FlashLoanArbitrage is FlashLoanSimpleReceiverBase {
