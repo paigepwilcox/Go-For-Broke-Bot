@@ -10,6 +10,9 @@ module.exports = {
     goerli: {
       url: process.env.INFURA_GOERLI_ENDPOINT,
       accounts: [process.env.PRIVATE_KEY_GAS, process.env.PRIVATE_KEY_PROFIT],
+      // gas: 5000000,
+      // gasPrice:  50000000000,
+      // gasLimit: 5000000000,
     },
   },
 };
