@@ -27,7 +27,7 @@ contract FlashLoanArbitrage is FlashLoanSimpleReceiverBase {
     address private immutable magicAddress =
         0x8Be59D90A7Dc679C5cE5a7963cD1082dAB499918;
     address private dexContractAddress =                
-        0xF65F895e8bc00Ad6DACeb2f9Fb931466579C9D6d;
+        0x51A7314feD7612f8fc635FFF3D5b37A64C2688aE;
 
     IERC20 private weth;
     IERC20 private magic;
@@ -81,6 +81,7 @@ contract FlashLoanArbitrage is FlashLoanSimpleReceiverBase {
             referralCode
         );
     }
+
     
     function getBalance(address _tokenAddress) external view returns (uint256) { 
         return IERC20(_tokenAddress).balanceOf(address(this));

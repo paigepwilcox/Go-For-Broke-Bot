@@ -9,9 +9,9 @@ contract Dex {
 
     // Aave ERC20 Token addresses on Goerli network
     address private immutable wethAddress =
-        0x0B1ba0af832d7C05fD64161E0Db78E85978E8082;
+        0x7649e0d153752c556b8b23DB1f1D3d42993E83a5;
     address private immutable magicAddress =
-        0x753198790D8B64eCa2A83B9Af99b6e79A018A74b;
+        0x8Be59D90A7Dc679C5cE5a7963cD1082dAB499918;
 
     IERC20 private weth;
     IERC20 private magic;
