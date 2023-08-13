@@ -22,7 +22,6 @@ deploy() will trigger this deployment of the contract and
 main()
   .then(() => process.exit(0))
   .catch((error) => {
-  console.error("you are getting this error: ", error);
-  process.exitCode = 1;
-}
-);
+    console.error("you are getting this error: ", error);
+    process.exitCode = 1;
+  });

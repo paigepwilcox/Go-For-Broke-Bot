@@ -7,73 +7,47 @@ import {FlashLoanSimpleReceiverBase} from "@aave/core-v3/contracts/flashloan/bas
 import {IPool} from "@aave/core-v3/contracts/interfaces/IPool.sol";
 import {IPoolAddressesProvider} from "@aave/core-v3/contracts/interfaces/IPoolAddressesProvider.sol";
 import {IERC20} from "@aave/core-v3/contracts/dependencies/openzeppelin/contracts/IERC20.sol";
-interface IUniswapV2Router {
-// https://docs.uniswap.org/contracts/v2/reference/smart-contracts/library#getamountsout
-    function getAmountsOut(uint256 amountIn, address[] memory path) external view returns (uint256[] memory amounts); // returns the maximum output amount of the other asset (accounting for fees) given reserves.
-    function swapExactTokensForTokens(uint256 amountIn, uint256 amountOutMin, address[] calldata path, address to, uint256 deadline) external returns (uint256[] memory amounts); 
-}
 
-interface IUniswapV2Pair {
-// https://docs.uniswap.org/contracts/v2/reference/smart-contracts/pair#swap-1
-  function swap(uint256 amount0Out,	uint256 amount1Out,	address to,	bytes calldata data) external; // swaps token emits swap, sync
+interface IDex {
+    function depositWETH(uint256 _amount) external;
+
+    function depositMAGIC(uint256 _amount) external;
+
+    function buyMAGIC() external;
+
+    function sellMAGIC() external;
 }
 
 
 contract FlashLoanArbitrage is FlashLoanSimpleReceiverBase {
     address payable owner;
+
+    address private immutable wethAddress =
+        0x7649e0d153752c556b8b23DB1f1D3d42993E83a5;
+    address private immutable magicAddress =
+        0x8Be59D90A7Dc679C5cE5a7963cD1082dAB499918;
+    address private dexContractAddress =                
+        0xF65F895e8bc00Ad6DACeb2f9Fb931466579C9D6d;
+
+    IERC20 private weth;
+    IERC20 private magic;
+    IDex private dexContract;
     
+
     constructor(address _addressProvider) 
         FlashLoanSimpleReceiverBase(IPoolAddressesProvider(_addressProvider))
     {
         owner = payable(msg.sender);
+
+        weth = IERC20(wethAddress);
+        magic = IERC20(magicAddress);
+        dexContract = IDex(dexContractAddress);
     }
 
     function checkingProvider(uint _num) external pure returns (uint) {
         return _num;
     }
 
-    function swap(address router, address _tokenIn, address _tokenOut, uint256 _amount) private {
-        IERC20(_tokenIn).approve(router, _amount);
-        address[] memory path;
-        path = new address[](2);
-        path[0] = _tokenIn;
-        path[1] = _tokenOut;
-        uint deadline = block.timestamp + 300;
-        IUniswapV2Router(router).swapExactTokensForTokens(_amount, 1, path, address(this), deadline);
-    }
-
-    // returns the amount left of _tokenOut after a single swap 
-    function getAmountOutMin(address router, address _tokenIn, address _tokenOut, uint256 _amount) public view returns (uint256) {
-        address[] memory path;
-        path = new address[](2);
-        path[0] = _tokenIn;
-        path[1] = _tokenOut;
-        uint256[] memory amountOutMins = IUniswapV2Router(router).getAmountsOut(_amount, path);
-        return amountOutMins[path.length -1];
-    }
-
-    function estimateDualTrade(address _router1, address _router2, address _token1, address _token2, uint256 _amount) external view returns (uint256)  {
-        uint256 amtBack1 = getAmountOutMin(_router1, _token1, _token2, _amount);
-        uint256 amtBack2 = getAmountOutMin(_router2, _token2, _token1, amtBack1);
-        return amtBack2;
-    }
-
-    // address token2 = 0x753198790D8B64eCa2A83B9Af99b6e79A018A74b;
-    // address token1 = 0x0B1ba0af832d7C05fD64161E0Db78E85978E8082;
-    // address router2 = 0xc35DADB65012eC5796536bD9864eD8773aBc74C4;
-    // address router1 = 0x5C69bEe701ef814a2B6a3EDD4B1652CB9cc5aA6f;
-
-// token2 = 0x753198790D8B64eCa2A83B9Af99b6e79A018A74b;
-// token1 = 0x0B1ba0af832d7C05fD64161E0Db78E85978E8082;
-//         address router2 = 0xc35DADB65012eC5796536bD9864eD8773aBc74C4;
-//         address router1 = 0x5C69bEe701ef814a2B6a3EDD4B1652CB9cc5aA6f;
-    // function dualTradePath(address _router1, address _router2, address _token1, address _token2) external onlyOwner {
-    //     router1 = _router1;
-    //     router2 = _router2;
-    //     token1 = _token1;
-    //     token2 = _token2;
-    // }
-    /* this is an interface that can be found in IFlashLoanSimpleReceiver.sol */
     function executeOperation(
         address asset,
         uint256 amount,
@@ -82,19 +56,13 @@ contract FlashLoanArbitrage is FlashLoanSimpleReceiverBase {
         bytes calldata params
     ) external override returns (bool) {
         
-        // uint startBalance = IERC20(token1).balanceOf(address(this));
-        // uint token2InitialBalance = IERC20(token2).balanceOf(address(this));
-        // swap(router1, token1, token2, amount);
-        // uint token2Balance = IERC20(token2).balanceOf(address(this));
-        // uint availableFunds = token2Balance - token2InitialBalance;
-        // swap(router2, token2, token1, availableFunds);
-        // uint endBalance = IERC20(token1).balanceOf(address(this));
-        // require(endBalance > startBalance, "reverted, you're broke");
-
+        dexContract.depositWETH(1000000000); // 1000 USDC
+        dexContract.buyMAGIC();
+        dexContract.depositMAGIC(magic.balanceOf(address(this)));
+        dexContract.sellMAGIC();
         
         uint256 amountOwed = amount + premium;
         IERC20(asset).approve(address(POOL), amountOwed);
-
         return true;
     }
 

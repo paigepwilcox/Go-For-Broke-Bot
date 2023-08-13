@@ -12,8 +12,6 @@ console.log("network name:", network);
 // if (network === 'arbitrum') config = require('./../config/arbitrum.json');
 if (network === 'goerli') config = require('./../config/goerli.json');
 
-// config = require('./../config/arbitrum.json');
-
 // main function
 const main = async () => {
     await setup();
@@ -39,27 +37,19 @@ const findRoute = () => {
 
 // find a trade 
 const findTrade = async () => {
-    console.log("finding a trade...")
+    console.log("GO FOR BROKE!");
+    console.log("***************************");
+    console.log("finding a trade...");
     let targetRoute = findRoute();
 
     try {
-        let tradeSize = 10000;
-        // const swapfunc = await arbitrageContract.swap(targetRoute.router1, targetRoute.token1, targetRoute.token2, tradeSize);
-        // console.log(swapfunc);
+        let tradeSize = 1000;
 
         const working = await arbitrageContract.checkingProvider(tradeSize);
         console.log(working);
-        
-        const amountsOut = await arbitrageContract.getAmountOutMin(targetRoute.router1, targetRoute.router2, targetRoute.token1, targetRoute.token2, tradeSize);
-        console.log(amountsOut);
-        // await dualTrade(targetRoute.router1,targetRoute.router2,targetRoute.token1,targetRoute.token2,tradeSize);
-        console.log("-------------*-----------")
-        console.log("estimating trade.....")
-        console.log("-------------*-----------")
-        // let tradeSize =  ethers.BigNumber.from(1000); //some big number
-        const amtBack = await arbitrageContract.estimateDualTrade(targetRoute.router1, targetRoute.router2, targetRoute.token1, targetRoute.token2, tradeSize);
+
         console.log("before the if statement***");
-        if (amtBack.gt(tradeSize)) {
+        if (tradeSize === 1000) {
             await dualTrade(targetRoute.router1,targetRoute.router2,targetRoute.token1,targetRoute.token2,tradeSize);
         } else {
             await findTrade();
@@ -82,8 +72,6 @@ const dualTrade = async (router1, router2, baseToken, token2, amount) => {
         inTrade = true;
         console.log('Making a trade eeeeee.......');
 
-        // const setTxValues = await arbContract.connect(owner).dualTradePath(router1, router2, baseToken, token2);
-        // await setTxValues.wait();
         const tx = await arbitrageContract.connect(owner).requestFlashLoan(baseToken, amount);
         console.log('hit');
         console.log(owner);
