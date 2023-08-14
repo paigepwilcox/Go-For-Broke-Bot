@@ -13,6 +13,7 @@ async function main() {
   // await flashLoanArbitrage.deployed();
   // console.log(flashLoanArbitrage);
   await flashLoanArbitrage.deploymentTransaction().wait();
+  console.log("deployed");
 }
 /* 
 deploy() will trigger this deployment of the contract and 

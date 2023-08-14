@@ -11,11 +11,11 @@ import {IERC20} from "@aave/core-v3/contracts/dependencies/openzeppelin/contract
 interface IDex {
     function depositWETH(uint256 _amount) external;
 
-    function depositMAGIC(uint256 _amount) external;
+    function depositUSDC(uint256 _amount) external;
 
-    function buyMAGIC() external;
+    function buyWETH() external;
 
-    function sellMAGIC() external;
+    function sellWETH() external;
 }
 
 
@@ -23,24 +23,23 @@ contract FlashLoanArbitrage is FlashLoanSimpleReceiverBase {
     address payable owner;
 
     address private immutable wethAddress =
-        0x7649e0d153752c556b8b23DB1f1D3d42993E83a5;
-    address private immutable magicAddress =
-        0x8Be59D90A7Dc679C5cE5a7963cD1082dAB499918;
+        0xCCB14936C2E000ED8393A571D15A2672537838Ad;
+    address private immutable usdcAddress =
+        0x65aFADD39029741B3b8f0756952C74678c9cEC93;
     address private dexContractAddress =                
-        0x51A7314feD7612f8fc635FFF3D5b37A64C2688aE;
+        0x630cBD2F7438362f61b870B923B1B1d2ebC8BB03;
 
     IERC20 private weth;
-    IERC20 private magic;
+    IERC20 private usdc;
     IDex private dexContract;
     
-
     constructor(address _addressProvider) 
         FlashLoanSimpleReceiverBase(IPoolAddressesProvider(_addressProvider))
     {
         owner = payable(msg.sender);
 
         weth = IERC20(wethAddress);
-        magic = IERC20(magicAddress);
+        usdc = IERC20(usdcAddress);
         dexContract = IDex(dexContractAddress);
     }
 
@@ -56,10 +55,10 @@ contract FlashLoanArbitrage is FlashLoanSimpleReceiverBase {
         bytes calldata params
     ) external override returns (bool) {
         
-        dexContract.depositWETH(1000000000); // 1000 USDC
-        dexContract.buyMAGIC();
-        dexContract.depositMAGIC(magic.balanceOf(address(this)));
-        dexContract.sellMAGIC();
+        dexContract.depositUSDC(10000000); // 1000 USDC
+        dexContract.buyWETH();
+        dexContract.depositWETH(weth.balanceOf(address(this)));
+        dexContract.sellWETH();
         
         uint256 amountOwed = amount + premium;
         IERC20(asset).approve(address(POOL), amountOwed);
@@ -82,6 +81,21 @@ contract FlashLoanArbitrage is FlashLoanSimpleReceiverBase {
         );
     }
 
+    function approveUSDC(uint256 _amount) external returns (bool) {
+        return usdc.approve(dexContractAddress, _amount);
+    }
+
+    function allowanceUSDC() external view returns (uint256) {
+        return usdc.allowance(address(this), dexContractAddress);
+    }
+
+    function approveWETH(uint256 _amount) external returns (bool) {
+        return weth.approve(dexContractAddress, _amount);
+    }
+
+    function allowanceWETH() external view returns (uint256) {
+        return weth.allowance(address(this), dexContractAddress);
+    }
     
     function getBalance(address _tokenAddress) external view returns (uint256) { 
         return IERC20(_tokenAddress).balanceOf(address(this));

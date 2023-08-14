@@ -1,6 +1,6 @@
 // contracts/FlashLoan.sol
 // SPDX-License-Identifier: MIT
-pragma solidity ^0.8.18;
+pragma solidity 0.8.18;
 
 import {IERC20} from "@aave/core-v3/contracts/dependencies/openzeppelin/contracts/IERC20.sol";
 
@@ -9,12 +9,12 @@ contract Dex {
 
     // Aave ERC20 Token addresses on Goerli network
     address private immutable wethAddress =
-        0x7649e0d153752c556b8b23DB1f1D3d42993E83a5;
-    address private immutable magicAddress =
-        0x8Be59D90A7Dc679C5cE5a7963cD1082dAB499918;
+        0xCCB14936C2E000ED8393A571D15A2672537838Ad;
+    address private immutable usdcAddress =
+        0x65aFADD39029741B3b8f0756952C74678c9cEC93;
 
     IERC20 private weth;
-    IERC20 private magic;
+    IERC20 private usdc;
 
     // exchange rate indexes
     uint256 dexARate = 90;
@@ -23,39 +23,39 @@ contract Dex {
     // keeps track of individuals' weth balances
     mapping(address => uint256) public wethBalances;
 
-    // keeps track of individuals' magic balances
-    mapping(address => uint256) public magicBalances;
+    // keeps track of individuals' USDC balances
+    mapping(address => uint256) public usdcBalances;
 
     constructor() {
         owner = payable(msg.sender);
         weth = IERC20(wethAddress);
-        magic = IERC20(magicAddress);
+        usdc = IERC20(usdcAddress);
+    }
+
+    function depositUSDC(uint256 _amount) external {
+        usdcBalances[msg.sender] += _amount;
+        uint256 allowance = usdc.allowance(msg.sender, address(this));
+        require(allowance >= _amount, "Check the usdc token allowance");
+        usdc.transferFrom(msg.sender, address(this), _amount);
     }
 
     function depositWETH(uint256 _amount) external {
         wethBalances[msg.sender] += _amount;
         uint256 allowance = weth.allowance(msg.sender, address(this));
-        require(allowance >= _amount, "Check the token allowance");
+        require(allowance >= _amount, "Check the weth token allowance");
         weth.transferFrom(msg.sender, address(this), _amount);
     }
 
-    function depositMAGIC(uint256 _amount) external {
-        magicBalances[msg.sender] += _amount;
-        uint256 allowance = magic.allowance(msg.sender, address(this));
-        require(allowance >= _amount, "Check the token allowance");
-        magic.transferFrom(msg.sender, address(this), _amount);
-    }
-
-    function buyMAGIC() external {
-        uint256 magicToReceive = ((wethBalances[msg.sender] / dexARate) * 100) *
-            (10**12);
-        magic.transfer(msg.sender, magicToReceive);
-    }
-
-    function sellMAGIC() external {
-        uint256 wethToReceive = ((magicBalances[msg.sender] * dexBRate) / 100) /
+    function buyWETH() external {
+        uint256 wethToReceive = ((usdcBalances[msg.sender] / dexARate) * 100) *
             (10**12);
         weth.transfer(msg.sender, wethToReceive);
+    }
+
+    function sellWETH() external {
+        uint256 usdcToReceive = ((wethBalances[msg.sender] * dexBRate) / 100) /
+            (10**12);
+        usdc.transfer(msg.sender, usdcToReceive);
     }
 
     function getBalance(address _tokenAddress) external view returns (uint256) {
