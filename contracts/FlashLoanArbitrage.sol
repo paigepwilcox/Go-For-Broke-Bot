@@ -55,7 +55,7 @@ contract FlashLoanArbitrage is FlashLoanSimpleReceiverBase {
         bytes calldata params
     ) external override returns (bool) {
         
-        dexContract.depositUSDC(10000000); // 1000 USDC
+        dexContract.depositUSDC(1000000); // 1 USDC
         dexContract.buyWETH();
         dexContract.depositWETH(weth.balanceOf(address(this)));
         dexContract.sellWETH();

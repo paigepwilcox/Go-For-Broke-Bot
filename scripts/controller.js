@@ -8,8 +8,8 @@ let config, arbitrageContract, owner, inTrade;
 
 // config variable is json 
 const network = hre.network.name;
-console.log("network name:", network);
-// if (network === 'arbitrum') config = require('./../config/arbitrum.json');
+console.log("Network Name:", network);
+console.log();
 if (network === 'goerli') config = require('./../config/goerli.json');
 
 // main function
@@ -31,7 +31,10 @@ const findRoute = () => {
     targetRoute.router2 = route[1];
     targetRoute.token1 = route[2];
     targetRoute.token2 = route[3];
-    console.log("route successfully loaded!");
+    console.log();
+    console.log("Route Successfully Loaded!");
+    console.log();
+    console.log();
     return targetRoute;
 }
 
@@ -39,20 +42,19 @@ const findRoute = () => {
 const findTrade = async () => {
     console.log("GO FOR BROKE!");
     console.log("***************************");
-    console.log("finding a trade...");
+    console.log("Starting Trade...");
+    console.log();
+    console.log("...finding a route");
     let targetRoute = findRoute();
 
     try {
-        let tradeSize = 1000;
+        let tradeSize = 1000000;
 
-        const working = await arbitrageContract.checkingProvider(tradeSize);
-        console.log(working);
-
-        console.log("before the if statement***");
-        if (tradeSize === 1000) {
+        if (tradeSize === 1000000) {
             await dualTrade(targetRoute.router1,targetRoute.router2,targetRoute.token1,targetRoute.token2,tradeSize);
         } else {
-            await findTrade();
+            // await findTrade();
+            console.log("trade size doesnt match, run again!");
         }
     } catch (e) {
         console.log("findTrade error:", e)
@@ -67,19 +69,32 @@ const dualTrade = async (router1, router2, baseToken, token2, amount) => {
         await findTrade();
         // return false?
     }
+    const wethBalancesBefore = await arbitrageContract.getBalance(token2);
+    const usdcBalancesBefore = await arbitrageContract.getBalance(baseToken);
     
     try {
         inTrade = true;
-        console.log('Making a trade eeeeee.......');
+        console.log('Making a trade...');
 
         const tx = await arbitrageContract.connect(owner).requestFlashLoan(baseToken, amount);
         console.log('hit');
-        console.log(owner);
         await tx.wait();
         
-        console.log('trade completed!');
+        console.log('Trade Completed!');
         inTrade = false;
-        await findTrade()
+        const wethBalancesAfter = await arbitrageContract.getBalance(token2);
+        const usdcBalancesAfter = await arbitrageContract.getBalance(baseToken);
+        console.log();
+        console.log("Balances BEFORE trade")
+        console.log("usdc balance:", usdcBalancesBefore);
+        console.log("weth balance:", wethBalancesBefore);
+        console.log();
+        console.log("Balances AFTER trade")
+        console.log("usdc balance:", usdcBalancesAfter);
+        console.log("weth balance:", wethBalancesAfter);
+        console.log();
+        console.log("Profit Made --> ", usdcBalancesAfter - usdcBalancesBefore);
+        // await findTrade()
     } catch (e) {
         console.log('O NO an ERROR, THE HORROR');
         console.log(e);
@@ -88,17 +103,12 @@ const dualTrade = async (router1, router2, baseToken, token2, amount) => {
     }
 }
 
-
-
 //connects to our deployed contract  
 //https://docs.ethers.org/v5/api/contract/contract-factory/
 const setup = async () => {
     [owner] = await ethers.getSigners();
-    // console.log(owner);
-
     const Iarb = await ethers.getContractFactory('FlashLoanArbitrage');
     arbitrageContract = await Iarb.attach(config.arbContract);
-    // console.log("arbitrageContract ----", arbitrageContract);
 }
 
 process.on('uncaughtException', function(err) { // uncaught js exception 
@@ -116,12 +126,3 @@ main()
         console.error(error);
         process.exit(1);
     });
-
-
-
-
-
-
-
-
-
