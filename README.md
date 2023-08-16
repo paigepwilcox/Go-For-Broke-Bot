@@ -13,10 +13,12 @@ This bot will perform arbitrage using aave's flashloan as a way to protect perso
   to run this program type in the terminal 
    `npx hardhat run scripts/controller.js --network goerli`
   please only run ONCE as the code will only run if there are funds in the dex.sol contract. I have funded it a good amount so should be able to run 5x at least.
+
 - A list of dependencies
   - HardHat
   - Ethers.js
   - Node.js
+  
 - Instructions for setting up the app
   - Install Node.js
   - Install and create a Hardhat javascript project 
