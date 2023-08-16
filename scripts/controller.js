@@ -41,6 +41,7 @@ const findRoute = () => {
 // find a trade 
 const findTrade = async () => {
     console.log("GO FOR BROKE!");
+    console.log("༼ಢ_ಢ༽");
     console.log("***************************");
     console.log("Starting Trade...");
     console.log();
@@ -57,6 +58,7 @@ const findTrade = async () => {
             console.log("trade size doesnt match, run again!");
         }
     } catch (e) {
+        console.log("༼☯﹏☯༽")
         console.log("findTrade error:", e)
         // await findTrade();
     }
@@ -93,10 +95,12 @@ const dualTrade = async (router1, router2, baseToken, token2, amount) => {
         console.log("usdc balance:", usdcBalancesAfter);
         console.log("weth balance:", wethBalancesAfter);
         console.log();
+        console.log("ᕕ༼✿•̀︿•́༽ᕗ")
         console.log("Profit Made --> ", usdcBalancesAfter - usdcBalancesBefore);
         // await findTrade()
     } catch (e) {
         console.log('O NO an ERROR, THE HORROR');
+        console.log("༼☯﹏☯༽")
         console.log(e);
         inTrade = false;
         // await findTrade();
