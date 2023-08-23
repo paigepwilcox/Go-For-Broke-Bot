@@ -1,5 +1,5 @@
 # Tenzents-Employee
 
-Please refer to the "dex" branch. 
+Please refer to the "dex" branch to view completed project. 
 
-The "main" branch is an example of Flashloan Arbitrage that is meant to deploy and run on a mainnet. 
+The "main" branch is purposed to deploy and run on a mainnet and is underconstruction. 
