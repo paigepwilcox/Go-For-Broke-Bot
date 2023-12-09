@@ -1,7 +1,9 @@
 # GO FOR BROKE BOT
 
-This bot will perform arbitrage using aave's flashloan as a way to protect personal funds. 
+Go For Broke Bot is a capstone project requiring the use of at least two new tecks, with a timeframe of three weeks for Ada Developers Academy. I chose to make an automated trading bot that performs an arbitrage trade by exchanges tokens in crypto. As a saferty measure to protect my personal funds, the bot will get a flash-loan from Aave, a liquidity protocol. Aave's flash-loans work within a 26 second timeframe, money is lent and it if its not paid back, fees included, witihn the 26 seconds any and all transactions reverse securing Aave's investment and in turn useful to secure my own. It will do this by importing Aave's smart contract into my own smart contract, and using Aave's executeOperation() & requestFlashLoan() functions. 
 
+Requirements:
+- two new techs 
 
 
 # DESCRIPTION
