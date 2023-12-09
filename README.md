@@ -1,5 +1,5 @@
-# Tenzents-Employee
+# Go For Broke Bot
 
-Please refer to the "dex" branch to view completed project. 
+!!!!!   Please refer to the "dex" branch's ReadMe   !!!!! 
 
-The "main" branch is purposed to deploy and run on a mainnet and is underconstruction. 
+The "main" branch is not for viewing. 
