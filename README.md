@@ -13,6 +13,12 @@ Presently, I am furhtering this project by developing comprehensive unit tests, 
 
 
 
+Under the "dex" branch: Go For Broke Bot is a terminal application that performs a specific type of trade called Arbitrage, it aslo utilizes Flash Loans from Aave's V3 protocol. A flash loan is a loan that needs repayment in the same block that it was lent. The allure to this loan is that you do not need to put down collateral, and if the loan is not repayed within the same block, all transactions that happened after the loan was given will be reverted. I utilied flashloans as a way to be risk adverse. This trading bot trades on a simulated Decentralized Exchange script that I wrote, see Dex.sol under contracts. This insures that the trade will not fail as long as there are usdc token funds in the Dex.sol contract. The FlashLoanArbitrage.sol file contains the arbitrage logic, the arbitrage logic calls functions within the Dex.sol contract. The smart contracts, FlashLoanArbitrage.sol and Dex.sol are both deployed on the Goerli testnet. I can interact with these contracts with a JavaScript "controller". By way of this controller I can make calls to and invoke functions within the deployed smart contracts.
+This terminal app performs a flashloan, then does an arbitrage trade on a (extremely simple) simulated dex.
+
+
+
+
 # DESCRIPTION
 - A technical description of the application
   - Under the "dex" branch: 
@@ -32,6 +38,21 @@ Presently, I am furhtering this project by developing comprehensive unit tests, 
   to run this program, type in the terminal 
    `npx hardhat run scripts/controller.js --network goerli`
   please only run ONCE as the code will only run if there are funds available in the dex.sol contract. I have funded it a substantial amount so it should be able to run at least 15x.
+
+
+
+# See the owner of the contracts
+
+https://goerli.etherscan.io/address/0xda797cfb7bc9529d3e80147e15cc089359c7447e
+See the FlashLoanArbitrage.sol deployed contract
+
+https://goerli.etherscan.io/address/0xf3d765aefa1a7269ac2c6cf0cdce398993bd587c
+See the Dex.sol deolpyed contract
+
+https://goerli.etherscan.io/address/0x630cbd2f7438362f61b870b923b1b1d2ebc8bb03
+
+
+
 
 - Dependencies
   - HardHat
