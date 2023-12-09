@@ -32,8 +32,7 @@ const findRoute = () => {
     targetRoute.token1 = route[2];
     targetRoute.token2 = route[3];
     console.log();
-    console.log("Route Successfully Loaded!");
-    console.log();
+    console.log("Route Successfully Loaded!", targetRoute);
     console.log();
     return targetRoute;
 }
@@ -43,9 +42,8 @@ const findTrade = async () => {
     console.log("GO FOR BROKE!");
     console.log("༼ಢ_ಢ༽");
     console.log("***************************");
-    console.log("Starting Trade...");
+    console.log("Starting Trade");
     console.log();
-    console.log("...finding a route");
     let targetRoute = findRoute();
 
     try {
@@ -76,17 +74,17 @@ const dualTrade = async (router1, router2, baseToken, token2, amount) => {
     
     try {
         inTrade = true;
-        console.log('Making a trade...');
 
         const tx = await arbitrageContract.connect(owner).requestFlashLoan(baseToken, amount);
         console.log('hit');
         await tx.wait();
         
-        console.log('Trade Completed!');
         inTrade = false;
         const wethBalancesAfter = await arbitrageContract.getBalance(token2);
         const usdcBalancesAfter = await arbitrageContract.getBalance(baseToken);
         console.log();
+        console.log('Trade Completed!');
+        console.log("--------------------------------")
         console.log("Balances BEFORE trade")
         console.log("usdc balance:", usdcBalancesBefore);
         console.log("weth balance:", wethBalancesBefore);
@@ -94,12 +92,13 @@ const dualTrade = async (router1, router2, baseToken, token2, amount) => {
         console.log("Balances AFTER trade")
         console.log("usdc balance:", usdcBalancesAfter);
         console.log("weth balance:", wethBalancesAfter);
+        console.log("--------------------------------")
         console.log();
         console.log("ᕕ༼✿•̀︿•́༽ᕗ")
         console.log("Profit Made --> ", usdcBalancesAfter - usdcBalancesBefore);
         // await findTrade()
     } catch (e) {
-        console.log('O NO an ERROR, THE HORROR');
+        console.log('ERROR');
         console.log("༼☯﹏☯༽")
         console.log(e);
         inTrade = false;
