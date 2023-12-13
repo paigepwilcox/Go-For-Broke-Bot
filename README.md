@@ -10,7 +10,7 @@ Due to time constraints, I did not finish unit testing for this code and felt un
 
 Presently, I am furhtering this project by developing comprehensive unit tests, exploring prevalent algorithms to optimize route selection, and delving into other areas of research.
 
-
+A picture of a working example
 ![alt text](https://github.com/paigepwilcox/Go-For-Broke-Bot/blob/dex/brokebot.png?raw=true)
 
 
@@ -39,16 +39,37 @@ The deployed smart contracts can be viewed with a block explorer.
   https://goerli.etherscan.io/address/0x630cbd2f7438362f61b870b923b1b1d2ebc8bb03
  
 
-# Set Up
-  - Dependencies
+# Set Up Your Own Project
+  Dependencies
     - HardHat
     - Ethers.js
     - Node.js
 
-  - Set-Up 
-    - Install Node.js
-    - Install and create a Hardhat JavaScript project 
-    - Install ethers.js through the Hardhat framework
+  Prerequisites:
+      Node.js and npm installed on your machine.
+      A code editor (like Visual Studio Code, Sublime Text, or Atom).
+  
+  Steps:
+  1. Initialize a new Node.js project:
+    Open your terminal and create a new directory for your project
+      ```
+      mkdir my-eth-project
+      cd my-eth-project
+      ```
+    Initialize a new Node.js project by running:
+      ```npm init -y```
+  2. Install Hardhat:
+    Install Hardhat locally
+    ```npm install --save-dev hardhat```
+  3. Initialize Hardhat in your project:
+    Run the following command to initialize Hardhat in your project
+    ```npx hardhat```
+    This command will prompt you to create a hardhat.config.js file, choose a default setup or Ethereum project template, and set up necessary configurations.
+  4. Install ethers.js:
+    Install ethers.js for Ethereum interactions
+    ```npm install --save ethers```
+
+
   
   Before running this program you must populate the env file with your own private information, see the env example.
   to run this program, type in the terminal 
