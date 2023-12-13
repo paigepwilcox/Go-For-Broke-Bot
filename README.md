@@ -51,20 +51,28 @@ The deployed smart contracts can be viewed with a block explorer.
   
   Steps:
   1. Initialize a new Node.js project:
+
     Open your terminal and create a new directory for your project
+
     ```mkdir my-eth-project  /n  cd my-eth-project```
 
     Initialize a new Node.js project by running
     ```npm init -y```
-  2. Install Hardhat:
-    Install Hardhat locally
+  2. Install Hardhat locally
+
     ```npm install --save-dev hardhat```
+
+
   3. Initialize Hardhat in your project:
-    Run the following command to initialize Hardhat in your project
+   
     ```npx hardhat```
+
     This command will prompt you to create a hardhat.config.js file, choose a default setup or Ethereum project template, and set up necessary configurations.
-  4. Install ethers.js:
-    Install ethers.js for Ethereum interactions
+
+
+  4. Install ethers.js for Ethereum interactions
+
+
     ```npm install --save ethers```
 
 
