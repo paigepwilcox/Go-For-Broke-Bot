@@ -54,7 +54,8 @@ The deployed smart contracts can be viewed with a block explorer.
      1. Open your terminal and create a new directory for your project
 
   ```mkdir my-eth-project  /n  cd my-eth-project```
-     2. Initialize a new Node.js project by running
+
+     ii. Initialize a new Node.js project by running
   ```npm init -y```
 
 
