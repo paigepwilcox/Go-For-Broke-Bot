@@ -13,7 +13,7 @@ Presently, I am furhtering this project by developing comprehensive unit tests, 
 
 
 
-# DESCRIPTION
+
 *A technical description of the application*
   
   Go For Broke Bot is a terminal application that performs arbitrage trades on a test network, named Goerli blockchain. This application is a Node.js javascript, hardhat-ethers project. Hardhat-ethers framework offers a simple way to connect with the Ethereum provider api called HRE. Using the HRE we can connect to the blockchain and interact with permited smart contracts.  
