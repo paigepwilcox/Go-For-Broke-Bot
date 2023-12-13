@@ -53,8 +53,8 @@ The deployed smart contracts can be viewed with a block explorer.
   1. Initialize a new Node.js project:
      1. Open your terminal and create a new directory for your project then initialize
 
-  ```mkdir my-eth-project  /n  cd my-eth-project
-  npm init -y```
+  ```mkdir my-eth-project  /n  cd my-eth-project```
+  ```npm init -y```
 
 
   1. Install Hardhat locally
