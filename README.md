@@ -1,4 +1,5 @@
 # GO FOR BROKE BOT
+:3
 
 Go For Broke Bot served as my capstone project during my tenure at Ada Developers Academy, the project had an uncompromisng deadline of three weeks and required utilization of at least two new technologies. I opted to create an automated trading bot specialized in arbitrage trading--arbitrage is, the simultaneous buying and selling of securites, currency or commodities in different markets or in derivative forms in order to take adnatgae of differing prices for the same asset--handling tokens in the cryptocurrency market.
 
