@@ -1,15 +1,22 @@
 # GO FOR BROKE BOT
 :3
 
-Go For Broke Bot served as my capstone project during my tenure at Ada Developers Academy, the project had an uncompromisng deadline of three weeks and required utilization of at least two new technologies. I opted to create an automated trading bot specialized in arbitrage trading--arbitrage is, the simultaneous buying and selling of securites, currency or commodities in different markets or in derivative forms in order to take adnatgae of differing prices for the same asset--handling tokens in the cryptocurrency market.
+Go For Broke Bot served as my capstone project during my tenure at Ada Developers Academy, the project had an uncompromisng deadline of three weeks and required utilization of at least two new technologies. I opted to create an automated trading bot specialized in arbitrage trading--arbitrage is, the simultaneous buying and selling of securites, currency or commodities in different markets or in derivative forms in order to take advantage of differing prices for the same asset--handling tokens in the cryptocurrency market.
 
 To safeguard my personal funds the bot will employ code--a pre-exisiting function from Aave's protocol--to obtain a flash-loan from Aave. Aave stands as a liquidity protocol that offers many applications, one of which is flash-loans. Flash-loans operate within a stringent 26-second timeframe--essentially, the time it takes for a single block to encrypt and append to the Ethereum blockchain. Should the loan, inclusive of fees, remain unpaid when the timeframe expires, all transactions undergo reversal. Securing Aave's investment and consequently protecting my own. These loaned funds serves as a safety measure as they facilitate the trading process.
 
 The implementation of flash-loans involves inheritance of Aave's smart contract, FlashLoanSimpleReceiverBase, into my own, FlashLoanArbitrage smart contract and invoking Aave's executeOperation() and requestFlashLoan() functions. 
 
+The arbitrage trade is ordered as so:
+- Loan USDC from Aave
+- Buy WETH with USDC from Dex.sol trade usdc for weth
+- Deposit that amount of WETH into Dex.sol
+- Sell WETH for USDC at a profit 
+- Repay loan and keep profit
+
 Due to time constraints, I did not finish unit testing for this code and felt uncomfortable connecting to a Ethereum's main network (blockchain) without such tests. As a workaround, I created a simplistic version of a "decentralized exchange" for demonstration purposes. I created an environment that had reserves of two tokens, allowing external smart contracts to invoke certain internal functions which execute transactions with this smart contract. By connecting to the test network blockchain called Goerli, I could test funcationality of my code using simulated funds and provide a tangible showcase for my professors and peers.
 
-Presently, I am furhtering this project by developing comprehensive unit tests, exploring prevalent algorithms to optimize route selection, and delving into other areas of research.
+Presently, I am furthering this project by developing comprehensive unit tests, exploring prevalent algorithms to optimize route selection, and delving into other areas of research.
 
 A picture of a working example
 ![alt text](https://github.com/paigepwilcox/Go-For-Broke-Bot/blob/dex/brokebot.png?raw=true)
@@ -58,7 +65,7 @@ The deployed smart contracts can be viewed with a block explorer.
   ```npm init -y```
 
 
-  1. Install Hardhat locally
+  2. Install Hardhat locally
 
     ```npm install --save-dev hardhat```
 
