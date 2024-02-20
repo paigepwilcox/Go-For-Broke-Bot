@@ -43,10 +43,13 @@ contract FlashLoanArbitrage is FlashLoanSimpleReceiverBase {
         dexContract = IDex(dexContractAddress);
     }
 
-    function checkingProvider(uint _num) external pure returns (uint) {
-        return _num;
-    }
-
+    /// Executes opertation after receiving the flash-borrowed asset 
+    /// @param asset loaned token address 
+    /// @param amount amount loaned
+    /// @param premium service fee
+    /// @param initiator address of the flashloan initiator
+    /// @param params byte-encoded params passed when initiating the flashloan
+    /// @return True if the execution of the operation succeeds, false otherwise
     function executeOperation(
         address asset,
         uint256 amount,
@@ -65,6 +68,9 @@ contract FlashLoanArbitrage is FlashLoanSimpleReceiverBase {
         return true;
     }
 
+    /// Requests a Flash Loan from import IPool via flashLoanSimple() 
+    /// @param _token address of the token to be loaned 
+    /// @param _amount amount of the token to be loaned
     function requestFlashLoan(address _token, uint256 _amount) external onlyOwner {
         address receiverAddress = address(this);
         address asset = _token;
@@ -81,10 +87,15 @@ contract FlashLoanArbitrage is FlashLoanSimpleReceiverBase {
         );
     }
 
+    /// Approves a Dex.sol contract to spend a certain amount of tokens via approve() a ERC20 function
+    /// @param _amount amount in usdc to approve 
+    /// @return bool returns True if operation is succesful 
     function approveUSDC(uint256 _amount) external returns (bool) {
         return usdc.approve(dexContractAddress, _amount);
     }
 
+    /// Shows the spendable amount the Dex.sol contract contains
+    /// @return uint256 returns the amount that we approved with the approve function
     function allowanceUSDC() external view returns (uint256) {
         return usdc.allowance(address(this), dexContractAddress);
     }
@@ -96,11 +107,15 @@ contract FlashLoanArbitrage is FlashLoanSimpleReceiverBase {
     function allowanceWETH() external view returns (uint256) {
         return weth.allowance(address(this), dexContractAddress);
     }
-    
+
+    /// Gets the balance of a token within FlashLoanArbitrage.sol contract
+    /// @param _tokenAddress address of a ERC20 token
     function getBalance(address _tokenAddress) external view returns (uint256) { 
         return IERC20(_tokenAddress).balanceOf(address(this));
     }
 
+    /// Allows the owner to withdraw a token into `msg.sender`
+    /// @param _tokenAddress address of a standard ERC20 token
     function withdraw(address _tokenAddress) external onlyOwner {
         IERC20 token = IERC20(_tokenAddress);
         token.transfer(msg.sender, token.balanceOf(address(this)));
@@ -115,4 +130,9 @@ contract FlashLoanArbitrage is FlashLoanSimpleReceiverBase {
     }
     //The receive function is similar to the fallback function, but it is designed specifically to handle incoming ether without the need for a data call.
     receive() external payable {}
+
+    /// A debugging function to chek if controller.js is connec to provider
+    function checkingProvider(uint _num) external pure returns (uint) {
+        return _num;
+    }
 }
