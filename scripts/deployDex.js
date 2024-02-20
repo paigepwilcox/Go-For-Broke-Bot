@@ -1,3 +1,8 @@
+/**
+ * deployDex.js
+ * Description: Deploys the Dex.sol contract to the Goerli testnet.
+ */
+
 const hre = require("hardhat");
 
 async function main() {

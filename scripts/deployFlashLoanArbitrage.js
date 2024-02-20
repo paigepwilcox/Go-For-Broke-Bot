@@ -1,3 +1,8 @@
+/**
+ * deployFlashLoanArbitrage.js
+ * Description: Deploys the FlashLoanArbitrage.sol contract onto the Goerli testnet.
+ */
+
 const { ethers } = require("hardhat");
 const hre = require("hardhat");
 
@@ -10,8 +15,6 @@ async function main() {
   // console.log(flashLoanArbitrage.deployTransaction);
   //  this above value will be passed into our flashLoanArbitrage constructor 
 
-  // await flashLoanArbitrage.deployed();
-  // console.log(flashLoanArbitrage);
   await flashLoanArbitrage.deploymentTransaction().wait();
   console.log("deployed");
 }
