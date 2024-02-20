@@ -13,7 +13,7 @@ The implementation of flash-loans involves inheritance of Aave's smart contract,
 The arbitrage trade is ordered as so:
 
 
-Due to time constraints, I did not finish unit testing for this code and felt uncomfortable connecting to a Ethereum's main network (blockchain) without such tests. As a workaround, I decided to deploy my smart contracts onto the georli testnet then I created a simplistic version of a "decentralized exchange" for demonstration purposes. This "decentralized exchange" is an environment that has reserves of two tokens, and allows for external smart contracts to invoke transactions, make it possible for transactions to occur. By connecting to the test network blockchain called Goerli, I could test funcationality of my code using simulated funds and provide a tangible showcase for my professors and peers.
+Due to time constraints, I did not finish unit testing for this code and felt uncomfortable connecting to a Ethereum's main network (blockchain) without such tests. As a workaround, I decided to deploy my smart contract onto the georli testnet then created another smart contract which catfished a simplistic version of a "decentralized exchange". This "decentralized exchange" is an environment that has reserves of two tokens, and allows for external smart contracts to invoke methods, making it possible for transactions to occur. By connecting to the test network blockchain called Goerli, I could test funcationality of my code using simulated funds and provide a tangible showcase for my professors and peers.
 
 In the future, I will further this project by developing comprehensive unit tests, exploring prevalent algorithms to optimize route selection, and eventually, connect to a mainnet.
 
