@@ -11,11 +11,16 @@ To safeguard my personal funds the bot will employ POOL.flashLoanSimple() and ex
 The implementation of flash-loans involves inheritance of Aave's smart contract, FlashLoanSimpleReceiverBase, into my own, FlashLoanArbitrage smart contract and invoking Aave's executeOperation() and requestFlashLoan() functions. 
 
 The arbitrage trade is ordered as so:
+- Loan USDC token
+- Trade USDC for WETH
+- Trade WETH for USDC 
+- Repay Loan 
+  *The deposit functions are not part of the actual arbitrage, they serve our simulated dex so we can make a succesful trade*
 
 
 Due to time constraints, I did not finish unit testing for this code and felt uncomfortable connecting to a Ethereum's main network (blockchain) without such tests. As a workaround, I decided to deploy my smart contract onto the georli testnet then created another smart contract which catfished a simplistic version of a "decentralized exchange". This "decentralized exchange" is an environment that has reserves of two tokens, and allows for external smart contracts to invoke methods, making it possible for transactions to occur. By connecting to the test network blockchain called Goerli, I could test funcationality of my code using simulated funds and provide a tangible showcase for my professors and peers.
 
-In the future, I will further this project by developing comprehensive unit tests, exploring prevalent algorithms to optimize route selection, and eventually, connect to a mainnet.
+In the future, I will further this project by developing comprehensive unit tests, fetch and mointor live data with a database, exploring prevalent algorithms to optimize route selection, and eventually, connect to a mainnet. 
 
 A picture of a working example
 ![alt text](https://github.com/paigepwilcox/Go-For-Broke-Bot/blob/dex/brokebot.png?raw=true)
@@ -23,7 +28,7 @@ A picture of a working example
 
 *A technical description of the application*
   
-  Go For Broke Bot is a terminal application that performs arbitrage trades on a test network, named Goerli blockchain. This application has two parts, the first is the controller which is a Hardhat-ethers project with a runtime of Node.js, and JavaScript logic. The second part are smart contracts--transaction protocols stored on a blockchain-- written in Solidity. Solidity is a statically typed language, without any type of console.log funtions, and is notoriously hard to debug. Hardhat-ethers framework offers a simple way to connect with the Ethereum provider API called HRE. Using the HRE we can connect to the blockchain and interact with permited smart contracts.  
+  Go For Broke Bot is a terminal application that performs arbitrage trades on a test network, named Goerli blockchain. This application has two parts, the first is the controller which is a Hardhat-ethers project with a runtime of Node.js, and JavaScript logic. The second part are smart contracts--transaction protocols stored on a blockchain-- written in Solidity. Solidity is a statically typed language, without any type of console.log/print funtions, and is notoriously hard to debug. Hardhat-ethers framework offers a simple way to connect with the Ethereum provider JSON-RPC API called HRE. Using the HRE we can connect to the blockchain and interact with permited smart contracts.  
   
   Controller:
   scripts/controller.js file contains functions to create routes, and invoke smart contract functions with the purpose of executing a profitable trade.
