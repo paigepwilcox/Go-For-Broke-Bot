@@ -1,24 +1,28 @@
+/**
+ * controller.js
+ * Description: Controls functions in the deployed smart contracts (Dex.sol, FlashLoanArbitrage.sol). Finds a trade route and executes a trade.
+ */
+
+// Connecting to Ethereum Provider via hardhats JSON-RPC
 const { ethers } = require("hardhat");
-// connect to the ethereum provider with hardhat
 const hre = require("hardhat");
 require("dotenv").config();
 
-// global variables:
+// Global Variables:
+// config = json object, arbitrageContract = object, owner = object, inTrade = bool
 let config, arbitrageContract, owner, inTrade;
 
-// config variable is json 
 const network = hre.network.name;
 console.log("Network Name:", network);
 console.log();
 if (network === 'goerli') config = require('./../config/goerli.json');
 
-// main function
 const main = async () => {
-    await setup();
-    await findTrade();
+    await setup(); 
+    await findDualTrade();
 }
 
-// returns a target object 
+// findRoute Function returns an object that contains a valid trade route 
 let index = 0;
 const findRoute = () => {
     const targetRoute= {};
@@ -37,49 +41,49 @@ const findRoute = () => {
     return targetRoute;
 }
 
-// find a trade 
-const findTrade = async () => {
+// findDualTrade function gets a trade route and sends it to dualTrade
+const findDualTrade = async () => {
     console.log("GO FOR BROKE!");
     console.log("༼ಢ_ಢ༽");
     console.log("***************************");
     console.log("Starting Trade");
     console.log();
     let targetRoute = findRoute();
+    
 
     try {
-        let tradeSize = 1000000;
+        let tradeSize = 1000000; // if we used a real exchange, this  value would be dependent on different numbers
 
         if (tradeSize === 1000000) {
             await dualTrade(targetRoute.router1,targetRoute.router2,targetRoute.token1,targetRoute.token2,tradeSize);
         } else {
-            // await findTrade();
+            // await findDualTrade();
             console.log("trade size doesnt match, run again!");
         }
     } catch (e) {
         console.log("༼☯﹏☯༽")
-        console.log("findTrade error:", e)
-        // await findTrade();
+        console.log("findDualTrade error:", e)
+        // await findDualTrade();
     }
 }
 
-// trade
+// Executes a dual trade by calling methods in the FlashLoanArbitrage contract via `arbitrageContract`
 const dualTrade = async (router1, router2, baseToken, token2, amount) => {
     if (inTrade === true) {
         console.log("opps! in a trade");
-        await findTrade();
-        // return false?
+        await findDualTrade();
     }
+
     const wethBalancesBefore = await arbitrageContract.getBalance(token2);
     const usdcBalancesBefore = await arbitrageContract.getBalance(baseToken);
     
     try {
         inTrade = true;
-
         const tx = await arbitrageContract.connect(owner).requestFlashLoan(baseToken, amount);
         console.log('hit');
         await tx.wait();
-        
         inTrade = false;
+
         const wethBalancesAfter = await arbitrageContract.getBalance(token2);
         const usdcBalancesAfter = await arbitrageContract.getBalance(baseToken);
         console.log();
@@ -96,17 +100,19 @@ const dualTrade = async (router1, router2, baseToken, token2, amount) => {
         console.log();
         console.log("ᕕ༼✿•̀︿•́༽ᕗ")
         console.log("Profit Made --> ", usdcBalancesAfter - usdcBalancesBefore);
-        // await findTrade()
+        // await findDualTrade()
     } catch (e) {
         console.log('ERROR');
         console.log("༼☯﹏☯༽")
         console.log(e);
         inTrade = false;
-        // await findTrade();
+        // await findDualTrade();
     }
 }
 
-//connects to our deployed contract  
+// Assigns the `owner` to the owner of the FlashLoanArbitrage  
+// Connects to deployed FlashLoanArbitrage contract 
+// Assigns `arbitrageContract` to the deployed FlashLoanArbitrage contract
 //https://docs.ethers.org/v5/api/contract/contract-factory/
 const setup = async () => {
     [owner] = await ethers.getSigners();
@@ -119,7 +125,8 @@ process.on('uncaughtException', function(err) { // uncaught js exception
     console.error(err.stack);
 });
 
-  process.on('unhandledRejection', (reason, p) => { // unhandle promise based async context, if the promise was rejected and no error handler is attached to the promise within a turn of the event loop
+// Used when loop is active 
+process.on('unhandledRejection', (reason, p) => { // unhandle promise based async context, if the promise was rejected and no error handler is attached to the promise within a turn of the event loop
     console.log('Unhandled Rejection at: '+p+' - reason: '+reason);
 });
 
