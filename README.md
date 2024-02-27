@@ -1,5 +1,5 @@
 # Go For Broke Bot
 
-!!!!!   Please refer to the "dex" branch's ReadMe   !!!!! 
+!!!!!   The Current Working Build is Located In Dex Branch   !!!!! 
 
 The "main" branch is not for viewing. 
