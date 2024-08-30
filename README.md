@@ -1,8 +1,4 @@
-TODO: 
-1. update arbitrage trade flow discription 
-
 # GO FOR BROKE BOT
-:3
 
 Go For Broke Bot served as my capstone project during my tenure at Ada Developers Academy. The project had an uncompromisng deadline of three weeks, and required utilization of at least two new technologies. I opted to create an automated trading bot specialized for arbitrage trade, handling tokens in the cryptocurrency market. Arbitrage is, the simultaneous buying and selling of securites, currency or commodities in different markets or in derivative forms in order to take advantage of differing prices for the same asset.
 
